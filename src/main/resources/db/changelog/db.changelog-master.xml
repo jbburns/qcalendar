@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1"  author="nvoxland">
+        <createTable  tableName="region">
+            <column  name="id"  type="int"  autoIncrement="true">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column  name="name"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="website"  type="varchar(250)"/>
+        </createTable>
+
+        <createTable  tableName="pax">
+            <column  name="id"  type="int"  autoIncrement="true">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column  name="region_id"  type="int">
+                <constraints  nullable="false" foreignKeyName="fk_region_pax" references="region(id)"/>
+            </column>
+            <column  name="f3_name"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="real_name"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="email"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="slack_handle"  type="varchar(250)"/>
+            <column  name="linkedin"  type="varchar(250)"/>
+            <column  name="phone"  type="varchar(250)"/>
+            <column  name="birthday"  type="date"/>
+            <column  name="vq"  type="date"/>
+            <column  name="enable_post_tracking"  type="boolean"/>
+        </createTable>
+
+        <createTable  tableName="ao">
+            <column  name="id"  type="int"  autoIncrement="true">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column  name="region_id"  type="int">
+                <constraints  nullable="false" foreignKeyName="fk_ao_pax" references="region(id)"/>
+            </column>
+            <column  name="name"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="location_description"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="workout_location"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="parking_location"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="workout_type"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="workout_days"  type="varchar(250)">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="launch_date"  type="date">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="official_date"  type="date">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="aoq_id"  type="int">
+                <constraints  nullable="false" foreignKeyName="fk_ao_q" references="pax(id)"/>
+            </column>
+            <column  name="slack_channel"  type="varchar(250)"/>
+            <column  name="notes"  type="varchar(250)"/>
+            <column  name="coffeeteria_location_description"  type="varchar(250)"/>
+            <column  name="coffeeteria_location_address"  type="varchar(250)"/>
+        </createTable>
+
+        <createTable  tableName="calendar">
+            <column  name="id"  type="int"  autoIncrement="true">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column  name="ao_id" type="int">
+                <constraints  nullable="false" foreignKeyName="fk_calendar_ao" references="ao(id)" />
+            </column>
+            <column  name="workout_date" type="date">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="q_id" type="int">
+                <constraints  nullable="false" foreignKeyName="fk_calendar_q" references="pax(id)" />
+            </column>
+            <column  name="ghost_q" type="boolean" defaultValueBoolean="false" />
+        </createTable>
+
+        <createTable  tableName="posts">
+            <column  name="id"  type="int"  autoIncrement="true">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column  name="ao_id" type="int">
+                <constraints  nullable="false" foreignKeyName="fk_posts_ao" references="ao(id)"/>
+            </column>
+            <column  name="post_date" type="date">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="pax_id" type="int">
+                <constraints  nullable="false" foreignKeyName="fk_post_q" references="pax(id)"/>
+            </column>
+            <column  name="post_type" type="varchar(250)">
+                <constraints  nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+<!--TODO
+Create unique creations for things like POSTING and the QCal to prevent dual Qing/Posting
+-->
+</databaseChangeLog>
+

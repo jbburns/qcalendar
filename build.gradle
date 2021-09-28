@@ -1,0 +1,130 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.5'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.asciidoctor.convert' version '1.5.8'
+	id 'nu.studer.jooq' version '6.0.1'
+	id "com.github.johnrengelman.processes" version "0.5.0"
+	id "org.springdoc.openapi-gradle-plugin" version "1.3.3"
+	id "org.openapi.generator" version "5.2.1"
+	id 'java'
+}
+
+group = 'com.f3birmingham'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+configurations.all {
+	resolutionStrategy.eachDependency {
+		if (requested.group == "org.liquibase" && requested.name == "liquibase-core") {
+			useVersion("3.9.0")
+			because("jooq + liquibase integration doesn't work at version 4 ");
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-jooq'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.5.10'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.5.10'
+	implementation 'org.springdoc:springdoc-openapi-data-rest:1.5.10'
+//	implementation 'org.springdoc:springdoc-openapi-security:1.5.10'
+	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1")
+	implementation 'org.liquibase:liquibase-core'
+	compileOnly 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'io.cucumber:cucumber-java:6.11.0'
+	testImplementation 'io.cucumber:cucumber-junit:6.11.0'
+	testImplementation 'io.cucumber:cucumber-spring:6.11.0'
+
+	jooqGenerator "org.jooq:jooq-meta-extensions-liquibase:${dependencyManagement.importedProperties['jooq.version']}"
+}
+
+test {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+openApiGenerate {
+	generatorName = "typescript"
+	inputSpec = "$buildDir/openapi.json".toString()
+	outputDir = "$buildDir/generated-js".toString()
+	apiPackage = "com.f3birmingham.qcalendar.api"
+	invokerPackage = "com.f3birmingham.qcalendar.invoker"
+	modelPackage = "com.f3birmingham.qcalendar.model"
+//	configOptions = [
+//			dateLibrary: "java8"
+//	]
+}
+
+jooq {
+	version = dependencyManagement.importedProperties['jooq.version']
+
+	configurations {
+		main {
+			generationTool {
+				generator {
+					database {
+						name = 'org.jooq.meta.extensions.liquibase.LiquibaseDatabase'
+						properties {
+							property {
+								key = 'scripts'
+								value = "src/main/resources/db/changelog/db.changelog-master.xml"
+							}
+						}
+					}
+					generate {
+//						implicitJoinPathsToOne = true
+//						embeddables = true
+						pojos = true
+						keys = false
+//						serializableInterfaces = true
+						validationAnnotations = true
+//						javaBeansGettersAndSetters = true
+						constructorPropertiesAnnotation = true
+//						pojosAsJavaRecordClasses = true
+
+						records = false
+//						springAnnotations = true
+//						daos = true
+						jpaAnnotations = true
+//						relations = true
+//						immutablePojos = true
+						fluentSetters = true
+					}
+					target {
+						packageName = 'com.f3birmingham.qcalendar.database'
+					}
+				}
+			}
+		}
+	}
+}
