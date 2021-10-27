@@ -8,7 +8,7 @@
    http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="1"  author="nvoxland">
+    <changeSet id="1"  author="jbburns">
         <createTable  tableName="region">
             <column  name="id"  type="int"  autoIncrement="true">
                 <constraints  primaryKey="true"  nullable="false"/>
@@ -117,8 +117,11 @@
             </column>
         </createTable>
     </changeSet>
+
+    <include file="test_data/test_data.xml" relativeToChangelogFile="true"/>
+
 <!--TODO
-Create unique creations for things like POSTING and the QCal to prevent dual Qing/Posting
+Create unique constraints for things like POSTING and the QCal to prevent dual Qing/Posting
 -->
 </databaseChangeLog>
 

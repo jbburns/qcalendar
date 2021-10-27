@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog logicalFilePath="test_data/test_data.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2" author="jbburns" runAlways="true" runOnChange="true">
+        <loadData tableName="REGION" file="REGION.csv" relativeToChangelogFile="true" />
+        <loadData tableName="PAX" file="PAX.csv" relativeToChangelogFile="true" />
+        <loadData tableName="AO" file="AO.csv" relativeToChangelogFile="true" />
+        <loadData tableName="CALENDAR" file="CALENDAR.csv" relativeToChangelogFile="true" />
+    </changeSet>
+
+</databaseChangeLog>
+

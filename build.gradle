@@ -23,7 +23,7 @@ configurations.all {
 	resolutionStrategy.eachDependency {
 		if (requested.group == "org.liquibase" && requested.name == "liquibase-core") {
 			useVersion("3.9.0")
-			because("jooq + liquibase integration doesn't work at version 4 ");
+			because("jooq + liquibase integration doesn't work at version 4 ")
 		}
 	}
 }
@@ -60,7 +60,6 @@ dependencies {
 	testImplementation 'io.cucumber:cucumber-java:6.11.0'
 	testImplementation 'io.cucumber:cucumber-junit:6.11.0'
 	testImplementation 'io.cucumber:cucumber-spring:6.11.0'
-
 	jooqGenerator "org.jooq:jooq-meta-extensions-liquibase:${dependencyManagement.importedProperties['jooq.version']}"
 }
 
@@ -74,7 +73,7 @@ asciidoctor {
 	dependsOn test
 }
 openApiGenerate {
-	generatorName = "typescript"
+	generatorName = "typescript-fetch"
 	inputSpec = "$buildDir/openapi.json".toString()
 	outputDir = "$buildDir/generated-js".toString()
 	apiPackage = "com.f3birmingham.qcalendar.api"
